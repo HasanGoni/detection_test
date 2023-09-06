@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>detection_test - Function to convert corners to bounding box and bouding box to corners</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="detection_test - Function to convert corners to bounding box and bouding box to corners">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://HasanGoni.github.io/detection_test/00_first_test_files/figure-html/cell-21-output-1.png">
+<meta property="og:site-name" content="detection_test">
+<meta property="og:image:height" content="2100">
+<meta property="og:image:width" content="690">
+<meta name="twitter:title" content="detection_test - Function to convert corners to bounding box and bouding box to corners">
+<meta name="twitter:description" content="">
+<meta name="twitter:image" content="https://HasanGoni.github.io/detection_test/00_first_test_files/figure-html/cell-21-output-1.png">
+<meta name="twitter:image-height" content="2100">
+<meta name="twitter:image-width" content="690">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">detection_test</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools ms-auto">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./first_test.html">Function to convert corners to bounding box and bouding box to corners</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">detection_test</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./core.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">core</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./first_test.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Function to convert corners to bounding box and bouding box to corners</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#model" id="toc-model" class="nav-link active" data-scroll-target="#model">model</a></li>
+  <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function">loss function</a></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/HasanGoni/detection_test/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Function to convert corners to bounding box and bouding box to corners</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> miniai.activations <span class="im">import</span> set_seed</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> miniai.datasets <span class="im">import</span> show_image</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> miniai.learner <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.vision.<span class="bu">all</span> <span class="im">import</span> L,imagenet_stats,create_body,resnet34</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> HTML</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> tensor,nn,optim</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader,default_collate</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#from torch.utils.data.dataloader import default_collate</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision <span class="im">import</span> transforms <span class="im">as</span> tfms</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torchvision.datasets <span class="im">import</span> CocoDetection</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imgaug.augmentables.bbs <span class="im">import</span> BoundingBoxesOnImage</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> imgaug <span class="im">import</span> augmenters <span class="im">as</span> iaa </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>IN_COLAB <span class="op">=</span> <span class="st">'google.colab'</span> <span class="kw">in</span> sys.modules</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> torch.device(<span class="st">'cuda'</span>,<span class="dv">0</span>) <span class="cf">if</span> torch.cuda.is_available() <span class="cf">else</span> torch.device(<span class="st">'cpu'</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>set_seed(<span class="dv">6789</span>, deterministic<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>SIZE <span class="op">=</span> <span class="dv">224</span>  <span class="co"># size of images we'll us</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_path <span class="op">=</span> <span class="st">"./coco_2017"</span> <span class="co"># Path to where you want to store the data</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>INFERENCE_ONLY <span class="op">=</span> <span class="va">False</span> <span class="co"># Set to True to skip downloading training data</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> download_coco():</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Coco Download Started.'</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>mkdir <span class="op">-</span>p {data_path}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>curl <span class="st">"http://images.cocodataset.org/annotations/annotations_trainval2017.zip"</span> <span class="op">&gt;</span> {data_path}<span class="op">/</span>annotations_trainval2017.<span class="bu">zip</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>unzip <span class="op">-</span>q <span class="op">-</span>o {data_path}<span class="op">/</span>annotations_trainval2017.<span class="bu">zip</span> <span class="op">-</span>d {data_path}</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>rm {data_path}<span class="op">/</span>annotations_trainval2017.<span class="bu">zip</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>curl <span class="st">"http://images.cocodataset.org/zips/val2017.zip"</span> <span class="op">&gt;</span> {data_path}<span class="op">/</span>val2017.<span class="bu">zip</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>unzip <span class="op">-</span>q <span class="op">-</span>o {data_path}<span class="op">/</span>val2017.<span class="bu">zip</span> <span class="op">-</span>d {data_path}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">!</span>rm {data_path}<span class="op">/</span>val2017.<span class="bu">zip</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> INFERENCE_ONLY:</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>curl <span class="st">"http://images.cocodataset.org/zips/train2017.zip"</span> <span class="op">&gt;</span> {data_path}<span class="op">/</span>train2017.<span class="bu">zip</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>unzip <span class="op">-</span>q <span class="op">-</span>o {data_path}<span class="op">/</span>train2017.<span class="bu">zip</span> <span class="op">-</span>d {data_path}</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">!</span>rm {data_path}<span class="op">/</span>train2017.<span class="bu">zip</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: <span class="bu">print</span>(<span class="st">'Warning: Inference Only Skipping download of training dataset'</span>)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Coco Download Completed.'</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>download_coco()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Coco Download Started.
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  241M  100  241M    0     0  5888k      0  0:00:41  0:00:41 --:--:-- 5849k   0  0:00:49  0:00:04  0:00:45 5032k
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  777M  100  777M    0     0  4608k      0  0:02:52  0:02:52  0:00:01 6095k2:36  0:00:22 5979k:02:52 --:--:-- 5932k
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 18.0G  100 18.0G    0     0  4763k      0  1:06:04  1:06:04 --:--:-- 6051k5:06:26 1750k 4616k      0  1:08:10  0:00:40  1:07:30 5934k21 4157k4561k      0  1:08:59  0:05:33  1:03:26 4171k   0  1:07:54  0:05:47  1:02:07 6364k52M    0     0  4697k      0  1:06:59  0:07:05  0:59:54 5141k8  0:07:20  0:58:58 6138k   0  1:05:20  0:08:08  0:57:12 4681k:19  0:10:49  0:52:30 5928k2  0:51:05 5781k     0  4984k      0  1:03:08  0:11:53  0:51:15 2955k   0  4960k      0  1:03:26  0:12:08  0:51:18 4357kk      0  1:03:10  0:12:35  0:50:35 5777k053k      0  1:02:16  0:16:36  0:45:40 1079k2570k 4970k      0  1:03:19  0:20:29  0:42:50 2648k      0  1:03:49  0:20:44  0:43:05 1757k 0     0  5001k      0  1:02:55  0:26:59  0:35:56 4478k5060k      0  1:02:11  0:29:35  0:32:36 6088k  0:29:43  0:32:25 5827kM    0     0  4967k      0  1:03:21  0:32:00  0:31:21 2347k      0  1:03:37  0:33:37  0:30:00 1473k:29:24 4711kk 1:05:03  0:38:23  0:26:40 3200k613k 1:05:12  0:43:26  0:21:46 4111k 0  4816k      0  1:05:20  0:46:03  0:19:17 4626k0  4817k      0  1:05:19  0:46:58  0:18:21 2812k3G    0     0  4815k      0  1:05:21  0:48:20  0:17:01 4323k    0  4810k      0  1:05:25  0:49:52  0:15:33 3868k14k      0  1:05:22  0:54:08  0:11:14 6644k  0  4820k      0  1:05:17  0:55:21  0:09:56 6099k06k  0  4812k      0  1:05:23  0:58:59  0:06:24 6183k:05:04  1:01:02  0:04:02 3650k:05:13  1:01:56  0:03:17 5489k0     0  4824k      0  1:05:14  1:02:12  0:03:02 2742k 0  4819k      0  1:05:18  1:02:17  0:03:01 1012k   0  4805k      0  1:05:29  1:02:29  0:03:00  654k6 17.3G    0     0  4795k      0  1:05:38  1:03:19  0:02:19 4943k  0  4768k      0  1:06:00  1:04:00  0:02:00 1029k.0G   97 17.4G    0     0  4754k      0  1:06:11  1:04:15  0:01:56  988k  97 17.5G    0     0  4753k      0  1:06:12  1:04:36  0:01:36 4284k1:11 4758k1:06:16  1:05:09  0:01:07 4777k
+Coco Download Completed.</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="va">None</span>, (<span class="dv">39</span>, <span class="dv">129</span>, <span class="dv">113</span>), (<span class="dv">164</span>, <span class="dv">80</span>, <span class="dv">133</span>), (<span class="dv">83</span>, <span class="dv">122</span>, <span class="dv">114</span>), (<span class="dv">99</span>, <span class="dv">81</span>, <span class="dv">172</span>), (<span class="dv">95</span>, <span class="dv">56</span>, <span class="dv">104</span>), (<span class="dv">37</span>, <span class="dv">84</span>, <span class="dv">86</span>),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">14</span>, <span class="dv">89</span>, <span class="dv">122</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">80</span>, <span class="dv">7</span>, <span class="dv">65</span>), (<span class="dv">10</span>, <span class="dv">102</span>, <span class="dv">25</span>), (<span class="dv">90</span>, <span class="dv">185</span>, <span class="dv">109</span>), (<span class="dv">106</span>, <span class="dv">110</span>, <span class="dv">132</span>), (<span class="dv">169</span>, <span class="dv">158</span>, <span class="dv">85</span>), (<span class="dv">188</span>, <span class="dv">185</span>, <span class="dv">26</span>), (<span class="dv">103</span>, <span class="dv">1</span>, <span class="dv">17</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">82</span>, <span class="dv">144</span>, <span class="dv">81</span>), (<span class="dv">92</span>, <span class="dv">7</span>, <span class="dv">184</span>), (<span class="dv">49</span>, <span class="dv">81</span>, <span class="dv">155</span>), (<span class="dv">179</span>, <span class="dv">177</span>, <span class="dv">69</span>), (<span class="dv">93</span>, <span class="dv">187</span>, <span class="dv">158</span>), (<span class="dv">13</span>, <span class="dv">39</span>, <span class="dv">73</span>), (<span class="dv">12</span>, <span class="dv">50</span>, <span class="dv">60</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">16</span>, <span class="dv">179</span>, <span class="dv">33</span>), (<span class="dv">112</span>, <span class="dv">69</span>, <span class="dv">165</span>), (<span class="dv">15</span>, <span class="dv">139</span>, <span class="dv">63</span>), (<span class="dv">33</span>, <span class="dv">191</span>, <span class="dv">159</span>), (<span class="dv">182</span>, <span class="dv">173</span>, <span class="dv">32</span>), (<span class="dv">34</span>, <span class="dv">113</span>, <span class="dv">133</span>), (<span class="dv">90</span>, <span class="dv">135</span>, <span class="dv">34</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">53</span>, <span class="dv">34</span>, <span class="dv">86</span>), (<span class="dv">141</span>, <span class="dv">35</span>, <span class="dv">190</span>), (<span class="dv">6</span>, <span class="dv">171</span>, <span class="dv">8</span>), (<span class="dv">118</span>, <span class="dv">76</span>, <span class="dv">112</span>), (<span class="dv">89</span>, <span class="dv">60</span>, <span class="dv">55</span>), (<span class="dv">15</span>, <span class="dv">54</span>, <span class="dv">88</span>), (<span class="dv">112</span>, <span class="dv">75</span>, <span class="dv">181</span>),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">42</span>, <span class="dv">147</span>, <span class="dv">38</span>), (<span class="dv">138</span>, <span class="dv">52</span>, <span class="dv">63</span>), (<span class="dv">128</span>, <span class="dv">65</span>, <span class="dv">149</span>), (<span class="dv">106</span>, <span class="dv">103</span>, <span class="dv">24</span>), (<span class="dv">168</span>, <span class="dv">33</span>, <span class="dv">45</span>), (<span class="dv">28</span>, <span class="dv">136</span>, <span class="dv">135</span>), (<span class="dv">86</span>, <span class="dv">91</span>, <span class="dv">108</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">52</span>, <span class="dv">11</span>, <span class="dv">76</span>), (<span class="dv">142</span>, <span class="dv">6</span>, <span class="dv">189</span>), (<span class="dv">57</span>, <span class="dv">81</span>, <span class="dv">168</span>), (<span class="dv">55</span>, <span class="dv">19</span>, <span class="dv">148</span>), (<span class="dv">182</span>, <span class="dv">101</span>, <span class="dv">89</span>), (<span class="dv">44</span>, <span class="dv">65</span>, <span class="dv">179</span>), (<span class="dv">1</span>, <span class="dv">33</span>, <span class="dv">26</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">122</span>, <span class="dv">164</span>, <span class="dv">26</span>), (<span class="dv">70</span>, <span class="dv">63</span>, <span class="dv">134</span>), (<span class="dv">137</span>, <span class="dv">106</span>, <span class="dv">82</span>), (<span class="dv">120</span>, <span class="dv">118</span>, <span class="dv">52</span>), (<span class="dv">129</span>, <span class="dv">74</span>, <span class="dv">42</span>), (<span class="dv">182</span>, <span class="dv">147</span>, <span class="dv">112</span>), (<span class="dv">22</span>, <span class="dv">157</span>, <span class="dv">50</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">56</span>, <span class="dv">50</span>, <span class="dv">20</span>), (<span class="dv">2</span>, <span class="dv">22</span>, <span class="dv">177</span>), (<span class="dv">156</span>, <span class="dv">100</span>, <span class="dv">106</span>), (<span class="dv">21</span>, <span class="dv">35</span>, <span class="dv">42</span>), (<span class="dv">13</span>, <span class="dv">8</span>, <span class="dv">121</span>), (<span class="dv">142</span>, <span class="dv">92</span>, <span class="dv">28</span>), (<span class="dv">45</span>, <span class="dv">118</span>, <span class="dv">33</span>),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">105</span>, <span class="dv">118</span>, <span class="dv">30</span>), (<span class="dv">7</span>, <span class="dv">185</span>, <span class="dv">124</span>), (<span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">146</span>), (<span class="dv">105</span>, <span class="dv">184</span>, <span class="dv">169</span>), (<span class="dv">22</span>, <span class="dv">18</span>, <span class="dv">5</span>), (<span class="dv">147</span>, <span class="dv">71</span>, <span class="dv">73</span>), (<span class="dv">181</span>, <span class="dv">64</span>, <span class="dv">91</span>),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">31</span>, <span class="dv">39</span>, <span class="dv">184</span>), (<span class="dv">164</span>, <span class="dv">179</span>, <span class="dv">33</span>), (<span class="dv">96</span>, <span class="dv">50</span>, <span class="dv">18</span>), (<span class="dv">95</span>, <span class="dv">15</span>, <span class="dv">106</span>), (<span class="dv">113</span>, <span class="dv">68</span>, <span class="dv">54</span>), (<span class="dv">136</span>, <span class="dv">116</span>, <span class="dv">112</span>), (<span class="dv">119</span>, <span class="dv">139</span>, <span class="dv">130</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">31</span>, <span class="dv">139</span>, <span class="dv">34</span>), (<span class="dv">66</span>, <span class="dv">6</span>, <span class="dv">127</span>), (<span class="dv">62</span>, <span class="dv">39</span>, <span class="dv">2</span>), (<span class="dv">49</span>, <span class="dv">99</span>, <span class="dv">180</span>), (<span class="dv">49</span>, <span class="dv">119</span>, <span class="dv">155</span>), (<span class="dv">153</span>, <span class="dv">50</span>, <span class="dv">183</span>), (<span class="dv">125</span>, <span class="dv">38</span>, <span class="dv">3</span>),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">129</span>, <span class="dv">87</span>, <span class="dv">143</span>), (<span class="dv">49</span>, <span class="dv">87</span>, <span class="dv">40</span>), (<span class="dv">128</span>, <span class="dv">62</span>, <span class="dv">120</span>), (<span class="dv">73</span>, <span class="dv">85</span>, <span class="dv">148</span>), (<span class="dv">28</span>, <span class="dv">144</span>, <span class="dv">118</span>), (<span class="dv">29</span>, <span class="dv">9</span>, <span class="dv">24</span>), (<span class="dv">175</span>, <span class="dv">45</span>, <span class="dv">108</span>),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">81</span>, <span class="dv">175</span>, <span class="dv">64</span>), (<span class="dv">178</span>, <span class="dv">19</span>, <span class="dv">157</span>), (<span class="dv">74</span>, <span class="dv">188</span>, <span class="dv">190</span>), (<span class="dv">18</span>, <span class="dv">114</span>, <span class="dv">2</span>), (<span class="dv">62</span>, <span class="dv">128</span>, <span class="dv">96</span>), (<span class="dv">21</span>, <span class="dv">3</span>, <span class="dv">150</span>), (<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">95</span>),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>          (<span class="dv">2</span>, <span class="dv">20</span>, <span class="dv">184</span>), (<span class="dv">122</span>, <span class="dv">37</span>, <span class="dv">185</span>)]</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> [<span class="st">"bg"</span>, <span class="st">"person"</span>, <span class="st">"bicycle"</span>, <span class="st">"car"</span>, <span class="st">"motorcycle"</span>, <span class="st">"airplane"</span>, <span class="st">"bus"</span>, <span class="st">"train"</span>, <span class="st">"truck"</span>, <span class="st">"boat"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                <span class="st">"traffic light"</span>, <span class="st">"fire hydrant"</span>, <span class="st">"stop sign"</span>, <span class="st">"parking meter"</span>, <span class="st">"bench"</span>, <span class="st">"bird"</span>, <span class="st">"cat"</span>, <span class="st">"dog"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>                <span class="st">"horse"</span>, <span class="st">"sheep"</span>, <span class="st">"cow"</span>, <span class="st">"elephant"</span>, <span class="st">"bear"</span>, <span class="st">"zebra"</span>, <span class="st">"giraffe"</span>, <span class="st">"backpack"</span>, <span class="st">"umbrella"</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>                <span class="st">"handbag"</span>, <span class="st">"tie"</span>, <span class="st">"suitcase"</span>, <span class="st">"frisbee"</span>, <span class="st">"skis"</span>, <span class="st">"snowboard"</span>, <span class="st">"sports ball"</span>, <span class="st">"kite"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>                <span class="st">"baseball bat"</span>, <span class="st">"baseball glove"</span>, <span class="st">"skateboard"</span>, <span class="st">"surfboard"</span>, <span class="st">"tennis racket"</span>, <span class="st">"bottle"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>                <span class="st">"wine glass"</span>, <span class="st">"cup"</span>, <span class="st">"fork"</span>, <span class="st">"knife"</span>, <span class="st">"spoon"</span>, <span class="st">"bowl"</span>, <span class="st">"banana"</span>, <span class="st">"apple"</span>, <span class="st">"sandwich"</span>, <span class="st">"orange"</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>                <span class="st">"broccoli"</span>, <span class="st">"carrot"</span>, <span class="st">"hot dog"</span>, <span class="st">"pizza"</span>, <span class="st">"donut"</span>, <span class="st">"cake"</span>, <span class="st">"chair"</span>, <span class="st">"couch"</span>, <span class="st">"potted plant"</span>,</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>                <span class="st">"bed"</span>, <span class="st">"dining table"</span>, <span class="st">"toilet"</span>, <span class="st">"tv"</span>, <span class="st">"laptop"</span>, <span class="st">"mouse"</span>, <span class="st">"remote"</span>, <span class="st">"keyboard"</span>, <span class="st">"cell phone"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                <span class="st">"microwave"</span>, <span class="st">"oven"</span>, <span class="st">"toaster"</span>, <span class="st">"sink"</span>, <span class="st">"refrigerator"</span>, <span class="st">"book"</span>, <span class="st">"clock"</span>, <span class="st">"vase"</span>, <span class="st">"scissors"</span>,</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>                <span class="st">"teddy bear"</span>, <span class="st">"hair drier"</span>, <span class="st">"toothbrush"</span>]</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>cat2id <span class="op">=</span> {v:k <span class="cf">for</span> k,v <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>id2cat <span class="op">=</span> {k:v <span class="cf">for</span> k,v <span class="kw">in</span> <span class="bu">enumerate</span>(vocab)}</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'The number of classes in the dataset: </span><span class="sc">{</span><span class="bu">len</span>(vocab)<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The number of classes in the dataset: 81</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>xmean,xstd <span class="op">=</span> L(imagenet_stats).<span class="bu">map</span>(tensor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>xmean, xstd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>(tensor([0.4850, 0.4560, 0.4060]), tensor([0.2290, 0.2240, 0.2250]))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>num_workers <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>num_gpus <span class="op">=</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.data <span class="im">import</span> DataLoader, default_collate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ex_t <span class="op">=</span> torch.zeros(<span class="dv">5</span>,<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>t_ <span class="op">=</span> torch.zeros(<span class="dv">1</span>,<span class="dv">4</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>torch.cat([t_,ex_t],dim<span class="op">=</span><span class="dv">0</span>).shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<pre><code>torch.Size([6, 4])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pad_bb_tensor(t, m):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat([t, torch.zeros(m <span class="op">-</span> <span class="bu">len</span>(t), <span class="dv">4</span>)], dim<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pad_cl_tensor(t, m):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat([t, torch.zeros(m <span class="op">-</span> <span class="bu">len</span>(t))], dim<span class="op">=</span><span class="dv">0</span>).<span class="bu">long</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># We need to zero-pad the boxes and labels to the max number of boxes in a batch</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> collate_fn(batch):</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    items <span class="op">=</span> <span class="bu">list</span>(<span class="bu">zip</span>(<span class="op">*</span>batch))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> items[<span class="dv">1</span>]:</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">continue</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>        l <span class="op">=</span> <span class="bu">len</span>(i) </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> l <span class="op">&gt;</span> m: m <span class="op">=</span> l</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    items[<span class="dv">0</span>] <span class="op">=</span> default_collate([i <span class="cf">for</span> i <span class="kw">in</span> items[<span class="dv">0</span>] <span class="cf">if</span> torch.is_tensor(i)])</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    boxes <span class="op">=</span> [pad_bb_tensor(i,m) <span class="cf">for</span> i <span class="kw">in</span> items[<span class="dv">1</span>] <span class="cf">if</span> torch.is_tensor(i)]</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    clses <span class="op">=</span> [pad_cl_tensor(i,m) <span class="cf">for</span> i <span class="kw">in</span> items[<span class="dv">2</span>] <span class="cf">if</span> torch.is_tensor(i)]</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    items[<span class="dv">1</span>] <span class="op">=</span> default_collate(boxes)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    items[<span class="dv">2</span>] <span class="op">=</span> default_collate(clses)</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> items</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train_params <span class="op">=</span> {<span class="st">"batch_size"</span>: batch_size <span class="op">*</span> num_gpus,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="st">"shuffle"</span>: <span class="va">True</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"drop_last"</span>: <span class="va">False</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">"num_workers"</span>: num_workers,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"collate_fn"</span>: collate_fn</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>valid_params <span class="op">=</span> {<span class="st">"batch_size"</span>: batch_size <span class="op">*</span> num_gpus,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                <span class="st">"shuffle"</span>: <span class="va">False</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"drop_last"</span>: <span class="va">False</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                <span class="st">"num_workers"</span>: num_workers,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                <span class="st">"collate_fn"</span>: collate_fn</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CocoDataset(CocoDetection):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                 <span class="va">self</span>, </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                 root, </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                 year, </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                 mode, </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                 transform<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        root <span class="op">=</span> Path(root)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        annFile <span class="op">=</span> root<span class="op">/</span><span class="ss">f"annotations/instances_</span><span class="sc">{</span>mode<span class="sc">}{</span>year<span class="sc">}</span><span class="ss">.json"</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        root <span class="op">=</span> root<span class="op">/</span><span class="ss">f"</span><span class="sc">{</span>mode<span class="sc">}{</span>year<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(CocoDataset, <span class="va">self</span>).<span class="fu">__init__</span>(root, annFile)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._load_categories()</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.transform <span class="op">=</span> transform</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> _load_categories(<span class="va">self</span>):</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>        categories <span class="op">=</span> <span class="va">self</span>.coco.loadCats(<span class="va">self</span>.coco.getCatIds())</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>        categories.sort(key<span class="op">=</span><span class="kw">lambda</span> x: x[<span class="st">"id"</span>])</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.label_map <span class="op">=</span> {}</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.label_info <span class="op">=</span> {}</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>        counter <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.label_info[<span class="dv">0</span>] <span class="op">=</span> <span class="st">"background"</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> c <span class="kw">in</span> categories:</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.label_map[c[<span class="st">"id"</span>]] <span class="op">=</span> counter</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.label_info[counter] <span class="op">=</span> c[<span class="st">"name"</span>]</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>            counter <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__getitem__</span>(<span class="va">self</span>, item):</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>        image, target <span class="op">=</span> <span class="bu">super</span>(CocoDataset, <span class="va">self</span>).<span class="fu">__getitem__</span>(item)</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>        width, height <span class="op">=</span> image.size</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>        boxes <span class="op">=</span> []</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>        labels <span class="op">=</span> []</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">len</span>(target) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span>, <span class="va">None</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> annotation <span class="kw">in</span> target:</span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>            bbox <span class="op">=</span> annotation.get(<span class="st">"bbox"</span>)</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>            boxes.append([bbox[<span class="dv">0</span>], bbox[<span class="dv">1</span>], (bbox[<span class="dv">0</span>] <span class="op">+</span> bbox[<span class="dv">2</span>]), (bbox[<span class="dv">1</span>] <span class="op">+</span> bbox[<span class="dv">3</span>])])</span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>            labels.append(<span class="va">self</span>.label_map[annotation.get(<span class="st">"category_id"</span>)])</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.transform <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>            image, (height, width), boxes, labels <span class="op">=</span> <span class="va">self</span>.transform(image, (height, width), boxes, labels)</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> image, torch.tensor(boxes), torch.tensor(labels).<span class="bu">long</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># denormalize the image data based on imagenet stats</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> denormalize(x):</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x<span class="op">*</span>xstd[...,<span class="va">None</span>,<span class="va">None</span>]<span class="op">+</span>xmean[...,<span class="va">None</span>,<span class="va">None</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># scale and center the image data based on imagenet stats</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalize(x):</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (x<span class="op">-</span>xmean[:,<span class="va">None</span>,<span class="va">None</span>])<span class="op">/</span>xstd[:,<span class="va">None</span>,<span class="va">None</span>]</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Xfm(<span class="bu">object</span>):</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>,size,augment<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.augment <span class="op">=</span> augment</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.size <span class="op">=</span> size</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.tseq <span class="op">=</span> iaa.Sequential([</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            iaa.Resize({<span class="st">"height"</span>: size[<span class="dv">0</span>], <span class="st">"width"</span>: size[<span class="dv">1</span>]}),</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>            iaa.Fliplr(<span class="fl">0.5</span>),</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>            iaa.Flipud(<span class="fl">0.20</span>),</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>            iaa.GammaContrast(<span class="fl">1.5</span>),</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>            iaa.Sometimes(</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>                <span class="fl">0.5</span>,iaa.Sequential([iaa.Affine(translate_percent<span class="op">=</span>{<span class="st">"x"</span>: (<span class="op">-</span><span class="fl">0.15</span>,<span class="fl">0.15</span>),<span class="st">"y"</span>: (<span class="op">-</span><span class="fl">0.15</span>,<span class="fl">0.15</span>)},rotate<span class="op">=</span>(<span class="dv">5</span>,<span class="op">-</span><span class="dv">5</span>), scale<span class="op">=</span>(<span class="fl">0.15</span>, <span class="fl">1.5</span>)),</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>                iaa.CoarseDropout(<span class="fl">0.1</span>, per_channel<span class="op">=</span><span class="va">True</span>)    </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>            ]))</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.vseq <span class="op">=</span> iaa.Sequential([</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>            iaa.Resize({<span class="st">"height"</span>: size[<span class="dv">0</span>], <span class="st">"width"</span>: size[<span class="dv">1</span>]})</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>        ])</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>,</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>                img,</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>                _img_size,</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>                bboxes<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>                labels<span class="op">=</span><span class="va">None</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>                ):</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> np.array(img)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>        bbs <span class="op">=</span> BoundingBoxesOnImage.from_xyxy_array(bboxes, shape<span class="op">=</span>img.shape)</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> (<span class="va">self</span>.augment): </span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>            n <span class="op">=</span> <span class="bu">len</span>(<span class="bu">list</span>(bbs.bounding_boxes))</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>            im_aug,bbs_aug <span class="op">=</span> <span class="va">self</span>.tseq(image<span class="op">=</span>img, bounding_boxes<span class="op">=</span>bbs)</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>            bbs_aug <span class="op">=</span> bbs_aug.clip_out_of_image()</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>            n2 <span class="op">=</span> <span class="bu">len</span>(<span class="bu">list</span>(bbs_aug.bounding_boxes))         </span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> n <span class="op">!=</span> n2: <span class="co"># at least one bounding box is fully outside of the image boundary</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>                <span class="co"># bail out of augmentation for this sample</span></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>                <span class="co">#print('bailing out of augmentation for this sample')</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>                im_aug,bbs_aug <span class="op">=</span> <span class="va">self</span>.vseq(image<span class="op">=</span>img, bounding_boxes<span class="op">=</span>bbs)</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>: im_aug,bbs_aug <span class="op">=</span> <span class="va">self</span>.vseq(image<span class="op">=</span>img, bounding_boxes<span class="op">=</span>bbs)</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>        b <span class="op">=</span> (bbs_aug.to_xyxy_array()<span class="op">/</span>(<span class="va">self</span>.size[<span class="dv">0</span>]<span class="op">/</span><span class="dv">2</span>))<span class="op">-</span><span class="dv">1</span>  <span class="co"># scale the bounding boxes to be between -1 and 1</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>        img <span class="op">=</span> normalize(tfms.ToTensor()(im_aug)) <span class="co"># normalize the image data with imagenet stats</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> img,<span class="va">self</span>.size,b,labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>train_set <span class="op">=</span> CocoDataset(data_path,<span class="dv">2017</span>,<span class="st">"train"</span>,Xfm((SIZE,SIZE),<span class="va">True</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a> train_dl <span class="op">=</span> DataLoader(train_set, <span class="op">**</span>train_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>loading annotations into memory...
+Done (t=16.26s)
+creating index...
+index created!</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>val_set <span class="op">=</span> CocoDataset(data_path,<span class="dv">2017</span>,<span class="st">"val"</span>,Xfm((SIZE,SIZE),<span class="va">False</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a> val_dl <span class="op">=</span> DataLoader(val_set, <span class="op">**</span>valid_params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>loading annotations into memory...
+Done (t=0.92s)
+creating index...
+index created!</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># takes an image tensor; denormalizes it and scales it up so that we have enough pixels to render our annotations reasonably</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> denormalize_tensor(im_tensor):</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> denormalize(im_tensor)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> (im <span class="op">-</span> im.<span class="bu">min</span>()<span class="op">/</span>(im.<span class="bu">max</span>()<span class="op">-</span>im.<span class="bu">min</span>())).clip(<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> np.array(im.permute(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">0</span>)<span class="op">*</span><span class="dv">255</span>).astype(np.uint8).copy()</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    im <span class="op">=</span> cv2.resize(im, (<span class="dv">768</span>,<span class="dv">768</span>))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> im</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> showobjects(im,bbox,clas):</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    annotated_im <span class="op">=</span> np.copy(im)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># composite annotations onto image</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    h,w <span class="op">=</span> annotated_im.shape[:<span class="dv">2</span>]</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># for each non-background class label</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(clas)):</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> clas[i] <span class="op">==</span> <span class="dv">0</span>: <span class="cf">continue</span> <span class="co"># skip background</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        category<span class="op">=</span>id2cat[clas[i].item()]</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>        color <span class="op">=</span> colors[clas[i]]</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>        box <span class="op">=</span> (bbox[i]<span class="op">+</span><span class="dv">1</span>)<span class="op">/</span><span class="dv">2</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>        x1,y1,x2,y2 <span class="op">=</span> box.tolist()</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        x1 <span class="op">=</span> <span class="bu">int</span>(x1<span class="op">*</span>w)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        x2 <span class="op">=</span> <span class="bu">int</span>(x2<span class="op">*</span>w)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>        y1 <span class="op">=</span> <span class="bu">int</span>(y1<span class="op">*</span>h)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>        y2 <span class="op">=</span> <span class="bu">int</span>(y2<span class="op">*</span>h)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># draw bounding box</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>        cv2.rectangle(annotated_im,(x1,y1),(x2,y2),color,<span class="dv">2</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># draw category label</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>        text_size <span class="op">=</span> cv2.getTextSize(category, cv2.FONT_HERSHEY_PLAIN, <span class="fl">1.5</span>, <span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>        cv2.rectangle(annotated_im, (x1, y1), (x1 <span class="op">+</span> text_size[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">3</span>, y1 <span class="op">+</span> text_size[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">4</span>), color,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>                        <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>        cv2.putText(annotated_im, category,</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>            (x1, y1 <span class="op">+</span> text_size[<span class="dv">1</span>] <span class="op">+</span> <span class="dv">4</span>), cv2.FONT_HERSHEY_PLAIN, <span class="fl">1.5</span>,</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>            (<span class="dv">255</span>, <span class="dv">255</span>, <span class="dv">255</span>), <span class="dv">1</span>)   </span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annotated_im</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>num_to_show <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>fig,ax <span class="op">=</span> plt.subplots(num_to_show,<span class="dv">1</span>,figsize<span class="op">=</span>(<span class="dv">7</span>,<span class="dv">7</span><span class="op">*</span>num_to_show))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_to_show):</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    show_image(showobjects(denormalize_tensor(train_set[i][<span class="dv">0</span>]),train_set[i][<span class="dv">1</span>],train_set[i][<span class="dv">2</span>]),ax<span class="op">=</span>ax[i])</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> ax[<span class="dv">0</span>].set_title(<span class="st">'Ground Truth'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="00_first_test_files/figure-html/cell-21-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>num_to_show <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>fig,ax <span class="op">=</span> plt.subplots(num_to_show,<span class="dv">1</span>,figsize<span class="op">=</span>(<span class="dv">7</span>,<span class="dv">7</span><span class="op">*</span>num_to_show))</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_to_show):</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    show_image(showobjects(denormalize_tensor(val_set[i][<span class="dv">0</span>]),val_set[i][<span class="dv">1</span>],val_set[i][<span class="dv">2</span>]),ax<span class="op">=</span>ax[i])</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>fig.tight_layout()</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>_ <span class="op">=</span> ax[<span class="dv">0</span>].set_title(<span class="st">'Ground Truth'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="00_first_test_files/figure-html/cell-22-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="71">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hw2corn(cntr:<span class="bu">int</span>,hw:<span class="bu">int</span>)<span class="op">-&gt;</span>torch.Tensor:</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat([cntr<span class="op">-</span>hw<span class="op">/</span><span class="dv">2</span>,cntr<span class="op">+</span>hw<span class="op">/</span><span class="dv">2</span>],dim<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> corn2hw(y1, y2)<span class="op">-&gt;</span>torch.Tensor:</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.cat([y1<span class="op">+</span>y2<span class="op">/</span><span class="dv">2</span>, y2<span class="op">-</span>y1], dim<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="model" class="level1">
+<h1>model</h1>
+<div class="cell" data-execution_count="72">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>create_body?</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Signature: create_body(model, n_in=3, pretrained=True, cut=None)
+Docstring: Cut off the body of a typically pretrained `arch` as determined by `cut`
+File:      ~/mambaforge/lib/python3.10/site-packages/fastai/vision/learner.py
+Type:      function</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="75">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> create_body(resnet34(<span class="va">True</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>x, <span class="op">*</span>_ <span class="op">=</span> <span class="bu">next</span>(<span class="bu">iter</span>(train_dl))</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>x.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/hasan/mambaforge/lib/python3.10/site-packages/torchvision/models/_utils.py:135: UserWarning: Using 'weights' as positional parameter(s) is deprecated since 0.13 and may be removed in the future. Please use keyword parameter(s) instead.
+  warnings.warn(
+/home/hasan/mambaforge/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet34_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet34_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="75">
+<pre><code>torch.Size([16, 3, 224, 224])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="76">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>body(x).shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="76">
+<pre><code>torch.Size([16, 512, 7, 7])</code></pre>
+</div>
+</div>
+<ul>
+<li>our last layer is currently 7x7 shape</li>
+<li>we will create some other feature map with <code>4x4</code>, <code>2x2</code>, <code>1x1</code></li>
+</ul>
+<div class="cell" data-execution_count="77">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ConvLayer(nn.Module):</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                n_inp:<span class="bu">int</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                n_out:<span class="bu">int</span>,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                stride:<span class="bu">int</span><span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>                drop:<span class="bu">float</span><span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.conv <span class="op">=</span> nn.Conv2d(</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>                             n_inp, </span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>                             n_out, </span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>                             kernel_size<span class="op">=</span><span class="dv">3</span>, </span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>                             stride<span class="op">=</span>stride, </span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>                             padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.bn <span class="op">=</span> nn.BatchNorm2d(n_out)</span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.drop <span class="op">=</span> nn.Dropout(drop)</span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.drop(F.relu(<span class="va">self</span>.bn(<span class="va">self</span>.conv(x))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="112">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> flat_conv(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    x:torch.Tensor, </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    k:<span class="bu">int</span>, <span class="co"># feature map scaled with this factor</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    )<span class="op">-&gt;</span>torch.Tensor:</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    bs, n_f, h, w <span class="op">=</span> x.size()</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> x.permute(<span class="dv">0</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">1</span>).contiguous() <span class="co"># [bs, n_f, h, w] -&gt; [bs, h, w, n_f]</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x.view(bs, <span class="op">-</span><span class="dv">1</span>, n_f<span class="op">//</span>k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="106">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> OutConv(nn.Module):</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>, </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>                k:<span class="bu">int</span>, <span class="co"># feature map scaled with this factor</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>                n_inp:<span class="bu">int</span>, </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>                bias:<span class="bu">int</span>):</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.k <span class="op">=</span> k</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.oconv1 <span class="op">=</span> nn.Conv2d(n_inp, (<span class="bu">len</span>(vocab)<span class="op">*</span>k), kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.oconv2 <span class="op">=</span> nn.Conv2d(n_inp, (<span class="dv">4</span><span class="op">*</span>k), kernel_size<span class="op">=</span><span class="dv">3</span>, padding<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.oconv1.bias.data.zero_().add_(bias)</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [flat_conv(<span class="va">self</span>.oconv1(x), <span class="va">self</span>.k), flat_conv(<span class="va">self</span>.oconv2(x), <span class="va">self</span>.k)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="107">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to create a pattern of 45 overlapping anchor boxes in unit coordinates</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># and allow for scaling and translation</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mk_unit_anchors(scale,x,y,half<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> []</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># xyxy format!!</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    l3 <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    n3 <span class="op">=</span> l3 <span class="op">*</span> <span class="fl">0.33334</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    s3 <span class="op">=</span> <span class="op">-</span>n3</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    e3 <span class="op">=</span> <span class="fl">1.</span><span class="op">+</span>n3<span class="op">-</span>l3</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    l5 <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    n5 <span class="op">=</span> l5 <span class="op">*</span> <span class="fl">0.33334</span></span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    s5 <span class="op">=</span> <span class="op">-</span>n5</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>    e5 <span class="op">=</span> <span class="fl">1.</span><span class="op">+</span>n5<span class="op">-</span>l5</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># will create 9 square anchor boxes tiled in an overlapping 3x3 grid</span></span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> np.linspace(s3,e3,<span class="dv">3</span>)</span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    ys <span class="op">=</span> np.linspace(s3,e3,<span class="dv">3</span>)</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    a.extend([[y,x,y<span class="op">+</span>l3,x<span class="op">+</span>l3] <span class="cf">for</span> y <span class="kw">in</span> ys <span class="cf">for</span> x <span class="kw">in</span> xs])</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> half:</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># will create 18 rectangular boxes tiled in an overlapping 3x6 grid</span></span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># aspect ratio is 1:0.5</span></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>        xs <span class="op">=</span> np.linspace(s3,e3,<span class="dv">3</span>)</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>        ys <span class="op">=</span> np.linspace(s5,e5,<span class="dv">6</span>)</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>        a.extend([[x,y,x<span class="op">+</span>l3,y<span class="op">+</span>l5] <span class="cf">for</span> y <span class="kw">in</span> ys <span class="cf">for</span> x <span class="kw">in</span> xs])</span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># will create 18 rectangular boxes tiled in an overlapping 6x3 grid</span></span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>        <span class="co"># aspect ratio is 0.5:1</span></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>        xs <span class="op">=</span> np.linspace(s5,e5,<span class="dv">6</span>)</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>        ys <span class="op">=</span> np.linspace(s3,e3,<span class="dv">3</span>)</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>        a.extend([[x,y,x<span class="op">+</span>l5,y<span class="op">+</span>l3] <span class="cf">for</span> y <span class="kw">in</span> ys <span class="cf">for</span> x <span class="kw">in</span> xs])</span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> torch.clamp(tensor(a)<span class="op">*</span>scale<span class="op">+</span>tensor([x,y,x,y]),<span class="bu">min</span><span class="op">=</span><span class="dv">0</span>,<span class="bu">max</span><span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>-Using the functions above, we’ll create a set of anchor boxes for each feature map and for each feature map location.</p>
+<div class="cell" data-execution_count="108">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># if image space is defined as 0.-1., then the following are the anchor box scales</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for each feature map layer</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>s7 <span class="op">=</span> <span class="fl">0.125</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>s4 <span class="op">=</span> <span class="fl">0.25</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>s2 <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>s1 <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>a7 <span class="op">=</span> <span class="bu">len</span>(mk_unit_anchors(s7,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>a4 <span class="op">=</span> <span class="bu">len</span>(mk_unit_anchors(s4,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>a2 <span class="op">=</span> <span class="bu">len</span>(mk_unit_anchors(s2,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>a1 <span class="op">=</span> <span class="bu">len</span>(mk_unit_anchors(s1,<span class="dv">0</span>,<span class="dv">0</span>))</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>anchors_per_map_location <span class="op">=</span> [a7,a4,a2,a1]</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="co"># for each feature map 'location' create a set of anchor boxes (45)</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>anchor_cnr <span class="op">=</span> torch.cat([</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>    torch.cat([mk_unit_anchors(s7,i<span class="op">*</span>s7,j<span class="op">*</span>s7) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">7</span>)]),     <span class="co"># for 7x7x45</span></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    torch.cat([mk_unit_anchors(s4,i<span class="op">*</span>s4,j<span class="op">*</span>s4) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">4</span>)]),     <span class="co"># for 4x4x45</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>    torch.cat([mk_unit_anchors(s2,i<span class="op">*</span>s2,j<span class="op">*</span>s2) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>) <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2</span>)]),     <span class="co"># for 2x2x45</span></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    mk_unit_anchors(s1,<span class="dv">0</span>,<span class="dv">0</span>) <span class="co"># for 1x1x45</span></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    ]).to(device)</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>anchors <span class="op">=</span> corn2hw(anchor_cnr[:,:<span class="dv">2</span>], anchor_cnr[:,<span class="dv">2</span>:]).to(device)</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'The total number of anchor boxes is: '</span>,<span class="bu">len</span>(anchors))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The total number of anchor boxes is:  3150</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="109">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> SSD_Multihead(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>                    nn.Module):</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                bias<span class="op">=-</span><span class="dv">4</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>                printit<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>                drop<span class="op">=</span><span class="dv">0</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>                ):</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.drop <span class="op">=</span> nn.Dropout(drop)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.sconv0 <span class="op">=</span> ConvLayer(</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">512</span>,</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>                               stride<span class="op">=</span><span class="dv">1</span>, </span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>                               drop<span class="op">=</span>drop) <span class="co"># 7x7</span></span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.sconv1 <span class="op">=</span> ConvLayer(</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>                               drop<span class="op">=</span>drop) <span class="co"># 4x4 </span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.sconv2 <span class="op">=</span> ConvLayer(</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>                               drop<span class="op">=</span>drop) <span class="co"># 2x2 </span></span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>                               </span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.sconv3 <span class="op">=</span> ConvLayer(</span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>                               <span class="dv">256</span>,</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a>                               drop<span class="op">=</span>drop) <span class="co"># 1x1</span></span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.out0 <span class="op">=</span> OutConv(a7, <span class="dv">256</span>, bias)</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.out1 <span class="op">=</span> OutConv(a4, <span class="dv">256</span>, bias)</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.out2 <span class="op">=</span> OutConv(a2, <span class="dv">256</span>, bias)</span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.out3 <span class="op">=</span> OutConv(a1, <span class="dv">256</span>, bias)</span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.printit <span class="op">=</span> printit</span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward(<span class="va">self</span>, x):</span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.drop(F.relu(x))</span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.sconv0(x)</span>
+<span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'sconv0:'</span>, x.shape)</span>
+<span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a>        o0c,o0l <span class="op">=</span> <span class="va">self</span>.out0(x)</span>
+<span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'out0:'</span>, o0l.shape)</span>
+<span id="cb41-49"><a href="#cb41-49" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.sconv1(x)</span>
+<span id="cb41-50"><a href="#cb41-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'sconv1:'</span>, x.shape)</span>
+<span id="cb41-51"><a href="#cb41-51" aria-hidden="true" tabindex="-1"></a>        o1c,o1l <span class="op">=</span> <span class="va">self</span>.out1(x)</span>
+<span id="cb41-52"><a href="#cb41-52" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'out1:'</span>, o1l.shape)</span>
+<span id="cb41-53"><a href="#cb41-53" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.sconv2(x)</span>
+<span id="cb41-54"><a href="#cb41-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'sconv2:'</span>, x.shape)</span>
+<span id="cb41-55"><a href="#cb41-55" aria-hidden="true" tabindex="-1"></a>        o2c,o2l <span class="op">=</span> <span class="va">self</span>.out2(x)</span>
+<span id="cb41-56"><a href="#cb41-56" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'out2:'</span>, o2l.shape)</span>
+<span id="cb41-57"><a href="#cb41-57" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> <span class="va">self</span>.sconv3(x)</span>
+<span id="cb41-58"><a href="#cb41-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'sconv3:'</span>, x.shape)</span>
+<span id="cb41-59"><a href="#cb41-59" aria-hidden="true" tabindex="-1"></a>        o3c,o3l <span class="op">=</span> <span class="va">self</span>.out3(x)</span>
+<span id="cb41-60"><a href="#cb41-60" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="va">self</span>.printit: <span class="bu">print</span>(<span class="st">'out3:'</span>, o3l.shape)</span>
+<span id="cb41-61"><a href="#cb41-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> [torch.cat([o0c,o1c,o2c,o3c], dim<span class="op">=</span><span class="dv">1</span>), <span class="co"># 7x7, 4x4, 2x2, 1x1</span></span>
+<span id="cb41-62"><a href="#cb41-62" aria-hidden="true" tabindex="-1"></a>                torch.cat([o0l,o1l,o2l,o3l], dim<span class="op">=</span><span class="dv">1</span>)] <span class="co"># 7x7, 4x4, 2x2, 1x1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="110">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>head_reg4 <span class="op">=</span> SSD_Multihead(printit<span class="op">=</span><span class="va">True</span>) <span class="co"># create an instance of custom head as described above</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>body <span class="op">=</span> create_body(resnet34(<span class="va">True</span>))  <span class="co"># create a resnet34 model with pretrained weights (downloaded) using fastai's create_body function</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> nn.Sequential(body,head_reg4) <span class="co"># combine the body and the head into a single model</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/hasan/mambaforge/lib/python3.10/site-packages/torchvision/models/_utils.py:135: UserWarning: Using 'weights' as positional parameter(s) is deprecated since 0.13 and may be removed in the future. Please use keyword parameter(s) instead.
+  warnings.warn(
+/home/hasan/mambaforge/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet34_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet34_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="113">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>pred_class, pred_box <span class="op">=</span> model(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>sconv0: torch.Size([16, 256, 7, 7])
+out0: torch.Size([16, 2205, 4])
+sconv1: torch.Size([16, 256, 4, 4])
+out1: torch.Size([16, 720, 4])
+sconv2: torch.Size([16, 256, 2, 2])
+out2: torch.Size([16, 180, 4])
+sconv3: torch.Size([16, 256, 1, 1])
+out3: torch.Size([16, 45, 4])</code></pre>
+</div>
+</div>
+</section>
+<section id="loss-function" class="level1">
+<h1>loss function</h1>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
